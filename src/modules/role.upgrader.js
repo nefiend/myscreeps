@@ -1,5 +1,5 @@
-// var roleHarvester = require('role.harvester')
 import { roleHarvester } from "./role.harvester";
+import { Log } from "./Log";
 
 export const roleUpgrader = {
 
@@ -28,7 +28,7 @@ export const roleUpgrader = {
                     }
             });
             const closest = creep.pos.findClosestByPath(targets);
-            console.log(creep.name+" closest:"+closest);
+            Log.info(creep.name+" closest:"+closest);
             if (closest == undefined) {
                 roleHarvester.run(creep);
             } else {
@@ -39,5 +39,3 @@ export const roleUpgrader = {
         }
 	}
 };
-
-// module.exports = roleUpgrader;

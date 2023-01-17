@@ -23,7 +23,7 @@ export const roleBuilder = {
         if(creep.memory.building) {
             var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             const closest = creep.pos.findClosestByPath(targets);
-            console.log(creep.name+" closest:"+closest);
+            Log.info(creep.name+" closest:"+closest);
             if(targets.length) {
                 if(creep.build(closest) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(closest, {visualizePathStyle: {stroke: '#ffffff'}});
@@ -47,14 +47,14 @@ export const roleBuilder = {
             }
             if (creep.memory.harverster) {
                 const rsc = g_resource_ctl.data;
-                console.log(creep.name+" haverstering");
+                Log.info(creep.name+" haverstering");
                 if(creep.harvest(rsc[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(rsc[0], {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
 
             } else {
                 const closest = creep.pos.findClosestByPath(targets);
-                console.log(creep.name+" "+closest);
+                Log.info(creep.name+" "+closest);
                 if(creep.withdraw(closest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(closest, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }

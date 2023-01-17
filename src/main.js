@@ -1,11 +1,3 @@
-// var roleHarvester = require('role.harvester');
-// var roleUpgrader = require('role.upgrader');
-// var roleBuilder = require('role.builder');
-// var roleRepairer = require('role.repairer');
-// var roleCarrier= require('role.carrier');
-// var Log = require('Log')
-// var g_resource_ctl = require('pub')
-
 import { errorMapper } from './modules/errorMapper'
 import { Log } from './modules/Log'
 import { roleHarvester } from './modules/role.harvester'
@@ -15,9 +7,11 @@ import { roleRepairer } from './modules/role.repairer'
 import { roleCarrier } from './modules/role.carrier'
 import { g_resource_ctl } from './modules/pub'
 import { g_role, creator } from './modules/role.creator'
+import { allData } from './modules/data'
 
 Log.debug("g_resource_ctl is data:"+g_resource_ctl.data+"len:"+g_resource_ctl.len+"assign:"+g_resource_ctl.assign)
 
+Log.level = 4
 // 游戏入口函数
 export const loop = errorMapper(() => {
     /* 删除死亡creep的内存信息 */
@@ -27,9 +21,12 @@ export const loop = errorMapper(() => {
                 g_resource_ctl.assign[Memory.creeps[name].pos]--;
             }
             delete Memory.creeps[name];
+            allData.screepsNum--;
         }
     }
     Log.debug(g_resource_ctl.assign);
+    Log.debug("----screeps num:" + allData.screepsNum)
+    allData.show();
 
     var rcl = Game.spawns['Spawn1'].room.controller.level;
 
@@ -38,44 +35,25 @@ export const loop = errorMapper(() => {
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == role);
     // Log.debug("harvester expect num is " + g_role['harvester'].expectNum)
     if(harvesters.length < g_role[role].expectNum) {
-        creator.create(role)
-        // var newName = 'harvester' + Game.time;
-        // var idx = getArrayMinIdx(g_resource_ctl.assign);
-        // var ret = Game.spawns['Spawn1'].spawnCreep(getHarversterType(Game.spawns['Spawn1'].room), newName,
-        //     {memory: {role: 'harvester', pos : idx}});
-        // if (ret == OK) {
-        //     g_resource_ctl.assign[idx]++;
-        //     Log.debug("harverster assign:" + g_resource_ctl.assign);
-        // } else {
-        //     Log.error("harverster spawn failed, ret="+ret);
-        // }
+        creator.create(role);
     }
 
     /* builders */
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     if(builders.length < g_role['builder'].expectNum && harvesters.length > 1) {
         creator.create('builder');
-        // var newName = 'builder' + Game.time;
-        // var ret = Game.spawns['Spawn1'].spawnCreep(getArmerByRoom(Game.spawns['Spawn1'].room), newName,
-        //     {memory: {role: 'builder'}});
     }
 
     /* repairers */
     var repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
     if(repairers.length < g_role['repairer'].expectNum && harvesters.length > 1) {
         creator.create('repairer');
-        // var newName = 'repairer' + Game.time;
-        // var ret = Game.spawns['Spawn1'].spawnCreep(getArmerByRoom(Game.spawns['Spawn1'].room), newName,
-        //     {memory: {role: 'repairer'}});
     }
 
     /* upgraders */
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     if(upgraders.length < g_role['upgrader'].expectNum && harvesters.length > 1) {
         creator.create('upgrader');
-        // var newName = 'upgrader' + Game.time;
-        // Game.spawns['Spawn1'].spawnCreep(getArmerByRoom(Game.spawns['Spawn1'].room), newName,
-        //     {memory: {role: 'upgrader'}});
     }
 
     /* carriers */
@@ -88,9 +66,6 @@ export const loop = errorMapper(() => {
             }
         }).length > 0) {
         creator.create('carrier');
-        // var newName = 'carrier' + Game.time;
-        // Game.spawns['Spawn1'].spawnCreep(getCarryByRoom(Game.spawns['Spawn1'].room), newName,
-        //     {memory: {role: 'carrier'}});
     }
 
     if(Game.spawns['Spawn1'].spawning) {
@@ -102,19 +77,18 @@ export const loop = errorMapper(() => {
             {align: 'left', opacity: 0.8});
     }
 
-    var tower = Game.getObjectById('63ba6e1c758fbda77246c39c');
-    if(tower) {
+    for (let tower of allData.towers) {
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART
         });
         if(closestDamagedStructure) {
-            console.log("tower repair!!!")
+            Log.info("tower repair!!!")
             tower.repair(closestDamagedStructure);
         }
 
         var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(closestHostile) {
-            console.log("tower attack!!!")
+            Log.info("tower attack!!!")
             tower.attack(closestHostile);
         }
     }

@@ -1,5 +1,6 @@
 import { g_resource_ctl } from './pub'
 import { Log } from './Log'
+import { allData } from './data';
 
 /** @param {Array} arr**/
 function getArrayMinIdx(arr) {
@@ -92,9 +93,12 @@ export const creator = {
 
         var ret = Game.spawns['Spawn1'].spawnCreep(armerType, newName,
             role == 'harvester' ? {memory: {role: role, pos : idx}} : {memory: {role: role}});
-        if (ret == OK && role == 'harvester') {
-            g_resource_ctl.assign[idx]++;
-            Log.debug("harverster assign:" + g_resource_ctl.assign);
+        if (ret == OK) {
+            allData.screepsNum++;
+            if (role == 'harvester') {
+                g_resource_ctl.assign[idx]++;
+                Log.debug("harverster assign:" + g_resource_ctl.assign);
+            }
         } else {
             Log.error(role+" spawn failed, ret="+ret);
             Log.error(role+" armer type is:"+armerType);

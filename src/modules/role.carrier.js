@@ -1,4 +1,5 @@
 import { g_resource_ctl } from './pub';
+import { Log } from './Log'
 
 export const roleCarrier = {
 
@@ -29,7 +30,7 @@ export const roleCarrier = {
                 })
 
                 const closest = creep.pos.findClosestByPath(targets);
-                console.log(creep.name+" "+closest);
+                Log.info(creep.name+" "+closest);
                 if(creep.withdraw(closest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(closest, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
@@ -41,10 +42,10 @@ export const roleCarrier = {
                             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                     }
             });
-            // console.log(creep.name+" "+targets);
+            // Log.info(creep.name+" "+targets);
             if(targets.length > 0) {
                 const closest = creep.pos.findClosestByPath(targets);
-                console.log(creep.name+" closest:"+closest);
+                Log.info(creep.name+" closest:"+closest);
                 if(creep.transfer(closest, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(closest, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
