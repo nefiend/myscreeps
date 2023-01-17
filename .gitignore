@@ -1,0 +1,4 @@
+.secret.json
+
+dist/
+node_modules/
