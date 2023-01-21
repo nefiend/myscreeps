@@ -14,6 +14,9 @@ Log.debug("g_resource_ctl is data:"+g_resource_ctl.data+"len:"+g_resource_ctl.le
 Log.level = 4
 // 游戏入口函数
 export const loop = errorMapper(() => {
+    // 调试用
+    // allData.show();
+
     /* 删除死亡creep的内存信息 */
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
@@ -26,7 +29,6 @@ export const loop = errorMapper(() => {
     }
     Log.debug(g_resource_ctl.assign);
     Log.debug("----screeps num:" + allData.screepsNum)
-    allData.show();
 
     var rcl = Game.spawns['Spawn1'].room.controller.level;
 
